@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<div class="container" id="register">
+    <div class="shadow p-4 mb-5 bg-body rounded w-50">
+        <h4 align="center">Реєстрація</h4>
+        <br/>
+        <form action="" method=POST align="left">
+            {% csrf_token %}
+            {{ form2.as_p }}
+                <br>
+            {{ form.as_p }}
+            <br/>
+            <center>
+            <input type="submit" value="Submit" class="btn btn-success">
+            </center>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <img src="{% thumbnail product.image 500x500 crop %}" alt="...">
+        </div>
+
+
+        <div class="col">
+            <div class="prod-info">
+                <table class="table">
+                    <tr><th><h5>{{ product.name }}</h5></th></tr>
+                </table>
+                <br/>
+                <p>{{ product.description }}</p>
+                <p>Склад: <strong>{{ product.contents }}</strong></p>
+                <p>Країна походження: <strong>{{ product.origin }}</strong></p>
+                <p>Вага: <strong>{{ product.weight }}гр.</strong></p>
+                <p>Ціна: <strong>{{ product.price }}грн</strong></p>
+                <form method="POST" action="{% url 'product' product.id %}">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input min="1" value=1 type="number" name="quantity" class="form-control">
+                        <input class="btn btn-success" type="submit" value="До кошика">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% block content %}
+    <br/><br/>
+<center>
+<div class="shadow p-4 mb-5 bg-body rounded w-25">
+	<h4>Вхід</h4>
+<br/>
+    <form action="" method=POST>
+	    {% csrf_token %}
+
+        <div class="mb-3" align='left'>
+          <label class="form-label">Номер телефону</label>
+          <input type="text" class="form-control" name="phone">
+
+        </div>
+        <div class="mb-3" align='left'>
+          <label for="exampleInputPassword1" class="form-label">Пароль</label>
+          <input type="password" class="form-control" name="password">
+        </div>
+        <br/>
+	    <input type="submit" value="Увійти" class="btn btn-success">
+    </form>
+</div>
+<a href="{% url 'user_registration' %}">реєстрація</a> |
+<a href="#">забули пароль?</a>
+</center>
+<br/><br/>
+{% endblock %}

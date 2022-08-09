@@ -1,0 +1,120 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+
+    <div class="shadow p-4 mb-5 bg-body rounded" id="checkout">
+        <h5>
+            Дані отримувача
+            {% if request.user.is_authenticated %}
+                <a href="#"><img width="20px" height="20px" src="{% static 'images/edit.png' %}"></a>
+            {%  endif %}
+        </h5>
+        <br/>
+        <form action="" method=POST>
+            {% csrf_token %}
+            {% if not request.user.is_authenticated %}
+                {{ form.as_p }}
+            {% else %}
+                <h4>{{ customer.first_name }} {{ customer.last_name }}</h4>
+                <br/>
+                <h6><img width="15px" height="15px" src="{% static 'images/phone.png' %}"> {{ customer.phone }}</h6>
+                {% if customer.email != None %}
+                    <h6><img width="15px" height="15px" src="{% static 'images/email.png' %}"> {{ customer.email }}</h6>
+                {% endif %}
+                <br/>
+            {% endif %}
+            <h5>Доставка</h5>
+            <br/>
+            <label>Оплата:</label>
+            {{ form2.payment }}
+            <br/>
+            <label for="city">Місто:</label>
+            <input class="form-control" list="datalistOptions" id="city" name="city" placeholder="Введіть назву міста..." required>
+                <datalist id="datalistOptions">
+                    {% for key, value in city_dict.items %}
+                        <option data-value="{{ value }}" value="{{ key }}"></option>
+                    {% endfor %}
+                </datalist>
+            <br/>
+
+            <label for="warehouse">Відділення нової пошти:</label>
+            <input class="form-control" list="datalistOptions2" id="warehouse" name="warehouse" placeholder="Введіть номер відділення або поштомата..." required>
+                <datalist id="datalistOptions2"></datalist>
+            <br/>
+
+            <label>Коментар:</label>
+            {{ form2.comment }}
+
+
+            <script>
+                $(function() {
+                    var cityInput = $('#city');
+                    cityInput.on('change', function() {
+                        var cityName = this.value
+                        var ref = $('#datalistOptions').find('option[value="' +cityName+ '"]').attr('data-value');
+                        var data = {
+                               "apiKey": "",
+                               "modelName": "Address",
+                               "calledMethod": "getWarehouses",
+                               "methodProperties": {
+                                   "CityName": cityName,
+                                   "CityRef": ref
+                               }
+                            }
+
+                        $.ajax({
+                            url: "https://api.novaposhta.ua/v2.0/json/",
+                            method: "post",
+                            dataType: "json",
+                            contentType: 'application/json',
+                            data: JSON.stringify(data),
+                            success: function (data) {
+                                $('#datalistOptions2').empty();
+                                $.each(data.data, function (index, element) {
+                                    $('#datalistOptions2').append($('<option>', {
+                                        value: element.Description
+                                    }));
+                                });
+                            }
+                        });
+                    });
+                });
+            </script>
+
+            <br/>
+
+            <center>
+                <input type="submit" value="Підтвердити замовлення" class="btn btn-success">
+            </center>
+
+        </form>
+    </div>
+
+
+    <div class="shadow p-4 mb-5 bg-body rounded" id="order">
+        {% for item in order.orderitem_set.all %}
+            <h6>{{ item.product.name }}</h6>
+            <table class="table table-hover table-sm">
+                <tbody>
+                    <tr>
+                        <th scope="row"><img src="{% thumbnail item.product.image 40x40 crop %}"></th>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <a href="{% url 'minus_quantity' item.id %}" class="btn btn-outline-dark btn-sm">-</a>
+                                <button type="button" class="btn btn-outline-dark btn-sm disabled"><strong>{{item.quantity}}</strong></button>
+                                <a href="{% url 'plus_quantity' item.id %}" class="btn btn-outline-dark btn-sm">+</a>
+                            </div>
+                        </td>
+                        <td>{{item.get_total|floatformat:2}}грн</td>
+                        <td>
+                            <a type="button" class="btn-close" href="{% url 'remove_item' item.id %}" aria-label="Close"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+        <h6>Всього: {{order.get_cart_total|floatformat:2}}грн</h6>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+<center>
+<br/>
+<h1>Дякуємо за замовлення!</h1>
+    <br/>
+    {% if not request.user.is_authenticated %}
+        <h4>Бажаєте створити пароль для входу в особистий кабінет?</h4>
+            <br/>
+        <a href="{% url 'create_password' %}" class="btn btn-success">створити пароль</a>
+        <a  class="btn btn-outline-dark" href="{% url 'store' %}">На головну</a>
+    {% else %}
+        <a  class="btn btn-outline-dark" href="{% url 'store' %}">На головну</a>
+        <a  class="btn btn-outline-success" href="{% url 'user_page' %}">Особистий кабінет</a>
+    {% endif %}
+</center>
+{% endblock %}

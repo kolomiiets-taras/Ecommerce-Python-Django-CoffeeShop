@@ -1,0 +1,106 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+    <div class="shadow p-4 mb-5 bg-body rounded w-25">
+        <table class="table">
+            <tr>
+                <td>
+                    <h5>{{ customer.first_name }} {{ customer.last_name }}</h5>
+                </td>
+                <td>
+                    <a href="#"><img width="20px" height="20px" src="{% static 'images/edit.png' %}"></a>
+                </td>
+            </tr>
+        </table>
+        <h6><img width="15px" height="15px" src="{% static 'images/phone.png' %}"> {{ customer.phone }}</h6>
+        <h6><img width="15px" height="15px" src="{% static 'images/email.png' %}"> {{ customer.email }}</h6>
+    </div>
+    <div class="shadow p-4 mb-5 bg-body rounded">
+        <table class="table">
+            <thead>
+                <tr>
+                  <th>Номер</th>
+                  <th>Дата</th>
+                  <th>Сума</th>
+                  <th>Статус</th>
+                  <th>Коментар</th>
+                  <th>Товари</th>
+                  <th>Доставка</th>
+                  <th>Дії</th>
+                </tr>
+            </thead>
+            {% for ord in orders %}
+            <tr>
+                <th scope="row">{{ ord.id }}</th>
+                <td>{{ ord.date_order|date:"d M, Y" }}</td>
+                <td>{{ ord.get_cart_total }}грн</td>
+                <td>{{ ord.status }}</td>
+                <td>{{ ord.shipping.comment }}</td>
+                <td>
+                      <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample-{{ ord.id }}" aria-expanded="false" aria-controls="collapseExample">
+                        Показати список
+                      </button>
+                    <div class="collapse" id="collapseExample-{{ ord.id }}">
+                      <div class="card card-body">
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                {% for item in ord.orderitem_set.all %}
+                                    <tr>
+                                        <th><a href="{% url 'product' item.product.id %}">{{ item.product.name }}</a></th>
+                                        <td>{{item.quantity}}од.</td>
+                                        <td>{{item.get_total|floatformat:2}}грн</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                      </div>
+                    </div>
+                </td>
+                 <td>
+                      <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample2-{{ ord.id }}" aria-expanded="false" aria-controls="collapseExample">
+                        Деталі
+                      </button>
+                    <div class="collapse" id="collapseExample2-{{ ord.id }}">
+                      <div class="card card-body">
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td>{{ ord.shipping.city }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ ord.shipping.warehouse }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ ord.shipping.payment }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                      </div>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ ord.id }}">
+                        Повторити
+                    </button>
+
+                    <div class="modal fade" id="exampleModal-{{ ord.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Створити нове замовлення за шаблоном?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ні</button>
+                            <a href="{% url 'order_copy' ord.id %}" class="btn btn-success">Так</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

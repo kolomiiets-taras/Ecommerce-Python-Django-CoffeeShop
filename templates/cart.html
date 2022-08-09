@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+
+    {% if order != None and order.get_cart_items > 0 %}
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="box-element">
+
+				<a  class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Повернутись до покупок</a>
+
+				<br>
+				<br>
+				<table class="table">
+					<tr>
+						<th><h5>Товарів: <strong>{{order.get_cart_items}}</strong></h5></th>
+						<th><h5>Всього:<strong> {{order.get_cart_total|floatformat:2}}грн</strong></h5></th>
+						<th>
+							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' order.id %}">Оформити замовлення</a>
+						</th>
+					</tr>
+				</table>
+
+			</div>
+
+			<br>
+			<div class="box-element">
+				<div class="cart-row">
+					<div style="flex:2"></div>
+					<div style="flex:2"><strong>Позиція</strong></div>
+					<div style="flex:1"><strong>Ціна</strong></div>
+					<div style="flex:1"><strong>Кількість</strong></div>
+					<div style="flex:1"><strong>Всього</strong></div>
+					<div style="flex:1"><strong>Видалити</strong></div>
+
+				</div>
+				{% for item in order.orderitem_set.all %}
+				<div class="cart-row">
+					<div style="flex:2">
+                        <a href="{% url 'product' item.product.id %}">
+                            <img class="row-image" src="{{item.product.img_url}}">
+                        </a>
+                    </div>
+                    <div style="flex:2">
+                        <a href="{% url 'product' item.product.id %}" style="text-decoration: none;">
+                            <p>{{item.product.name}}</p>
+                        </a>
+                    </div>
+					<div style="flex:1"><p>{{item.product.price|floatformat:2}} грн</p></div>
+					<div style="flex:1">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <a href="{% url 'minus_quantity' item.id %}" class="btn btn-outline-dark btn-sm">-</a>
+                          <button type="button" class="btn btn-outline-dark btn-sm disabled"><strong>{{item.quantity}}</strong></button>
+                          <a href="{% url 'plus_quantity' item.id %}" class="btn btn-outline-dark btn-sm">+</a>
+                        </div>
+
+                    </div>
+					<div style="flex:1"><p>{{item.get_total|floatformat:2}} грн</p></div>
+					<div style="flex:1">
+						<a class="btn btn-sm btn-danger" href="{% url 'remove_item' item.id %}">Видалити</a>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	{% else %}
+	<h1 style="text-align:center;padding: 50px">Корзина порожня</h1>
+        <center>
+            <a  class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Повернутись до покупок</a>
+        </center>
+	{% endif %}
+
+{% endblock %}
