@@ -134,7 +134,7 @@ def checkout(request, order_id):                             # order checkout pa
 
     url = 'https://api.novaposhta.ua/v2.0/json/'
     data = {
-        "apiKey": "88f3934cb732e8112b9b355e09100f10",
+        "apiKey": "",
         "modelName": "Address",
         "calledMethod": "getCities",
         "methodProperties": {}
