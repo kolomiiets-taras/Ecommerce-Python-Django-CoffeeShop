@@ -43,11 +43,14 @@
     <div class="row row-cols-1 row-cols-md-5 g-4">
     {% for product in products %}
         <div class="col">
-        <div class="card" style="width: 16rem;">
-            <a href="{% url 'product' product.id %}"><img src="{% thumbnail product.image 200x200 crop %}" class="card-img-top" alt="..."></a>
+        <div class="card" style="width: 14rem;">
+            {% if product.image %}
+                <a href="{% url 'product' product.id %}"><img src="{% thumbnail product.image 200x200 crop %}" class="card-img-top" alt="..."></a>
+            {% else %}
+                <a href="{% url 'product' product.id %}"><img src="{% static 'images/coffee_bag.jpg' %}" class="card-img-top" alt="..."></a>
+            {% endif %}
             <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.contents }}</p>
+                <h6 class="card-title">{{ product.name }}</h6>
                 <p class="card-text"><strong>{{ product.weight }}гр. <br> {{ product.price}} грн</strong></p>
                 {% if product.name not in order_items_tuple %}
                         <div class="d-grid gap-2" id="cart-btn">
