@@ -6,15 +6,15 @@
         <table class="table">
             <tr>
                 <td>
-                    <h5>{{ customer.first_name }} {{ customer.last_name }}</h5>
+                    <h5><i class="bi bi-person"></i> {{ customer.first_name }} {{ customer.last_name }}</h5>
                 </td>
                 <td>
                     <a href="#"><img width="20px" height="20px" src="{% static 'images/edit.png' %}"></a>
                 </td>
             </tr>
         </table>
-        <h6><img width="15px" height="15px" src="{% static 'images/phone.png' %}"> {{ customer.phone }}</h6>
-        <h6><img width="15px" height="15px" src="{% static 'images/email.png' %}"> {{ customer.email }}</h6>
+        <h6><i class="bi bi-telephone"></i> {{ customer.phone }}</h6>
+        <h6><i class="bi bi-envelope"></i> {{ customer.email }}</h6>
     </div>
     <div class="shadow p-4 mb-5 bg-body rounded">
         <table class="table">

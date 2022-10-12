@@ -20,5 +20,4 @@ urlpatterns = [
     path('create_password/', views.create_password, name='create_password'),
     path('user_page/', views.user_page, name='user_page'),
     path('order_copy/<str:pk>/', views.order_copy, name='order_copy'),
-
 ]

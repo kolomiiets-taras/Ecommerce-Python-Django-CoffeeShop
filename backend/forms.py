@@ -8,6 +8,7 @@ from phonenumber_field.formfields import PhoneNumberField
 
 
 class ShippingForm(forms.ModelForm):
+
     class Meta:
         model = Shipping
         fields = (
@@ -42,9 +43,9 @@ class CustomerForm(forms.ModelForm):
         'class': 'form-control', 'placeholder': 'example@gmail.com'
     }), label="Email")
     first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control', 'placeholder': "Ім'я отримувача"}), label="Ім'я")
+        'class': 'form-control', 'placeholder': "Ім'я"}), label="Ім'я")
     last_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control', 'placeholder': "Прізвище отримувача"}), label="Прізвище")
+        'class': 'form-control', 'placeholder': "Прізвище"}), label="Прізвище")
 
     class Meta:
         model = Customer

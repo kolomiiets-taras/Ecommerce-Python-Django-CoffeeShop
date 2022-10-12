@@ -1,35 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
-from django.core.exceptions import MultipleObjectsReturned
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 from .models import *
-import requests
 from .forms import CustomerForm, ShippingForm, RegisterUserForm
-import uuid
-import json
-
-
-def user_check(request):
-    try:
-        customer = request.user.customer
-    except:
-        try:
-            device = request.session['device']
-            customer = Customer.objects.get(device=device)
-        except:
-            request.session['device'] = str(uuid.uuid4())
-            customer = Customer.objects.create(device=request.session['device'])
-    return customer
-
-
-def order_check(customer):
-    try:
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    except MultipleObjectsReturned:
-        order = Order.objects.filter(customer=customer, complete=False).last()
-    return order
+from .utils import user_check, order_check, get_np_cities
 
 
 def store(request):         # store page
@@ -129,18 +105,9 @@ def remove_item(request, pk):                       # remove item from cart
 
 def checkout(request, order_id):                             # order checkout page
     customer = user_check(request)
-
     order = Order.objects.get(pk=order_id)
-
-    url = 'https://api.novaposhta.ua/v2.0/json/'
-    data = {
-        "apiKey": "",
-        "modelName": "Address",
-        "calledMethod": "getCities",
-        "methodProperties": {}
-    }
-    city_json = requests.post(url, json=data).text
-    city_dict = {d['Description']: d['Ref'] for d in json.loads(city_json)['data']}
+    city_dict = get_np_cities()
+    form = CustomerForm()
 
     if not order.orderitem_set.all():
         return redirect('store')
@@ -163,7 +130,7 @@ def checkout(request, order_id):                             # order checkout pa
             return redirect('success_page')
 
     else:
-        form = CustomerForm(instance=customer)
+        form = CustomerForm()
         form2 = ShippingForm()
 
     return render(request, 'checkout.html', {'form': form,

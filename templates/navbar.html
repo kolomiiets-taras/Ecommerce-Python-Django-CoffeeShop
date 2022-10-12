@@ -1,4 +1,6 @@
 {% load static %}
+{% load bootstrap_icons %}
+
  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 <nav class="navbar sticky-top navbar-expand-lg bg-light">
   <div class="container-fluid">
@@ -39,8 +41,8 @@
                 </a>
             {% endif %}
         <div class="form-inline my-2 my-lg-0" id="display">
-            <a href="{% url 'cart' %}">
-                <img id="cart-icon" src="{% static 'images/cart.png' %}">
+            <a style="text-decoration: none;" href="{% url 'cart' %}">
+                {% bs_icon 'cart2' size='1.6em' %}
             </a>
             <span class='badge badge-warning' id='cart-total'>{{ order.get_cart_items }}</span>
         </div>
@@ -61,6 +63,6 @@ setInterval(function(){
             $("#cart-total").append(temp);
         },
     });
-},1000);
+},2000);
 })
 </script>
